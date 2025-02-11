@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Melina - AI-Powered Video Conferencing</title>
+    <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <main>
+        <header class="main-header">
+            <h1 class="site-title">
+                <i class="fas fa-robot"></i> सम्बन्ध
+                <span class="beta-tag">BETA</span>
+            </h1>
+        </header>
+
+        <!-- AI Chat Container -->
+        <div id="ai-chat-container" class="floating-chat">
+            <div class="chat-header">
+                <div class="ai-avatar">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="chat-title">
+                    <h3>AI Voice Assistant</h3>
+                    <div class="connection-status">
+                        <div class="status-dot"></div>
+                        <span>Connected</span>
+                    </div>
+                </div>
+                <button class="collapse-btn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            
+            <div id="ai-chat-messages" class="chat-messages">
+                <div class="ai-message">
+                    <p>Hi! I'm your AI assistant. How can I enhance your meeting today?</p>
+                </div>
+            </div>
+
+            <div class="chat-controls">
+                <button id="startVoice" class="voice-btn">
+                    <i class="fas fa-microphone"></i>
+                    Start Voice Chat
+                </button>
+                <div class="message-input-group">
+                    <input type="text" class="chat-input" placeholder="Type your message...">
+                    <button class="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Interface -->
+        <div id="join-wrapper" class="auth-card">
+            <div class="card-header">
+                <h2>Join Virtual Space</h2>
+                <p>Connect with your team seamlessly</p>
+            </div>
+            <div class="input-group">
+                <label for="username"><i class="fas fa-user"></i></label>
+                <input id="username" type="text" placeholder="Your display name">
+            </div>
+            <button id="join-btn" class="primary-btn">
+                Enter Meeting Space
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Video Grid -->
+        <div id="user-streams" class="video-grid"></div>
+
+        <!-- Meeting Controls -->
+        <div id="footer" class="meeting-controls">
+            <div class="control-group">
+                <button id="camera-btn" class="control-btn">
+                    <i class="fas fa-video"></i>
+                </button>
+                <span class="control-label">Camera</span>
+            </div>
+            <div class="control-group">
+                <button id="mic-btn" class="control-btn">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <span class="control-label">Microphone</span>
+            </div>
+            <div class="control-group danger">
+                <button id="leave-btn" class="control-btn">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+                <span class="control-label">Leave</span>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+    <script src='script.js'></script>
+</body>
+</html>
