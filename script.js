@@ -1,158 +1,180 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Agora setup
-    let client = AgoraRTC.createClient({mode:'rtc', codec:"vp8"});
+document.addEventListener('DOMContentLoaded', function () {
+    // Make sure to include AgoraRTC SDK in your HTML:
+    // <script src="https://cdn.agora.io/sdk/release/AgoraRTC_N.js"></script>
+
+    let client = AgoraRTC.createClient({ mode: 'rtc', codec: "vp8" });
 
     let config = {
-        appid:"b22359b3feb544fa8d5e16c466078a15",
-        token:"007eJxTYJh5+Jag5nW+iEXOeXsLJglZy4UttLjUGSHcH/V3/9q4k+4KDElGRsamlknGaalJpiYmaYkWKaaphmbJJmZmBuYWiYamWx2+pDcEMjLs/97FwAiFID4HQ0pqcmZuYo4JAwMApOgg9g==",
-        uid:null,
-        channel:"decimal4",
+        appid: "b22359b3feb544fa8d5e16c466078a15",
+        token: "007eJxTYJh5+Jag5nW+iEXOeXsLJglZy4UttLjUGSHcH/V3/9q4k+4KDElGRsamlknGaalJpiYmaYkWKaaphmbJJmZmBuYWiYamWx2+pDcEMjLs/97FwAiFID4HQ0pqcmZuYo4JAwMApOgg9g==", // ❌ Don't expose in production
+        uid: null,
+        channel: "decimal4",
     };
 
     let localTracks = {
-        audioTrack:null,
-        videoTrack:null
+        audioTrack: null,
+        videoTrack: null
     };
 
     let localTrackState = {
-        audioTrackMuted:false,
-        videoTrackMuted:false
+        audioTrackMuted: false,
+        videoTrackMuted: false
     };
 
     let remoteTracks = {};
 
-
-    // AI Chat Box handling
     const joinButton = document.getElementById('join-btn');
     const aiChatContainer = document.getElementById('ai-chat-container');
 
-
     if (joinButton && aiChatContainer) {
         joinButton.addEventListener('click', async () => {
-
-            //Hide the ai chat container
+            const usernameInput = document.getElementById('username');
+            if (!usernameInput || !usernameInput.value.trim()) {
+                alert('Please enter a valid username.');
+                return;
+            }
 
             aiChatContainer.style.display = 'none';
+            config.uid = usernameInput.value.trim();
 
-            config.uid = document.getElementById('username').value
-            await joinStreams()
-            document.getElementById('join-wrapper').style.display = 'none'
-            document.getElementById('footer').style.display = 'flex'
+            await joinStreams();
+
+            const joinWrapper = document.getElementById('join-wrapper');
+            const footer = document.getElementById('footer');
+            if (joinWrapper) joinWrapper.style.display = 'none';
+            if (footer) footer.style.display = 'flex';
         });
     } else {
         console.error('Join button or AI chat container not found.');
     }
 
-    document.getElementById('mic-btn').addEventListener('click', async () => {
-        if(!localTrackState.audioTrackMuted){
-            await localTracks.audioTrack.setMuted(true);
-            localTrackState.audioTrackMuted = true
-            document.getElementById('mic-btn').style.backgroundColor ='rgb(255, 80, 80, 0.7)'
-        }else{
-            await localTracks.audioTrack.setMuted(false)
-            localTrackState.audioTrackMuted = false
-            document.getElementById('mic-btn').style.backgroundColor ='#1f1f1f8e'
-        }
-    })
-
-    document.getElementById('camera-btn').addEventListener('click', async () => {
-        if(!localTrackState.videoTrackMuted){
-            await localTracks.videoTrack.setMuted(true);
-            localTrackState.videoTrackMuted = true
-            document.getElementById('camera-btn').style.backgroundColor ='rgb(255, 80, 80, 0.7)'
-        }else{
-            await localTracks.videoTrack.setMuted(false)
-            localTrackState.videoTrackMuted = false
-            document.getElementById('camera-btn').style.backgroundColor ='#1f1f1f8e'
-        }
-    })
-
-    document.getElementById('leave-btn').addEventListener('click', async () => {
-        for (trackName in localTracks){
-            let track = localTracks[trackName]
-            if(track){
-                track.stop()
-                track.close()
-                localTracks[trackName] = null
+    const micBtn = document.getElementById('mic-btn');
+    if (micBtn) {
+        micBtn.addEventListener('click', async () => {
+            if (!localTrackState.audioTrackMuted) {
+                await localTracks.audioTrack.setMuted(true);
+                localTrackState.audioTrackMuted = true;
+                micBtn.style.backgroundColor = 'rgb(255, 80, 80, 0.7)';
+            } else {
+                await localTracks.audioTrack.setMuted(false);
+                localTrackState.audioTrackMuted = false;
+                micBtn.style.backgroundColor = '#1f1f1f8e';
             }
-        }
-        await client.leave()
-        document.getElementById('footer').style.display = 'none'
-        document.getElementById('user-streams').innerHTML = ''
-        document.getElementById('join-wrapper').style.display = 'block'
+        });
+    }
 
-        // Show AI Chat Container
-        aiChatContainer.style.display = 'block';
-    })
+    const cameraBtn = document.getElementById('camera-btn');
+    if (cameraBtn) {
+        cameraBtn.addEventListener('click', async () => {
+            if (!localTrackState.videoTrackMuted) {
+                await localTracks.videoTrack.setMuted(true);
+                localTrackState.videoTrackMuted = true;
+                cameraBtn.style.backgroundColor = 'rgb(255, 80, 80, 0.7)';
+            } else {
+                await localTracks.videoTrack.setMuted(false);
+                localTrackState.videoTrackMuted = false;
+                cameraBtn.style.backgroundColor = '#1f1f1f8e';
+            }
+        });
+    }
 
+    const leaveBtn = document.getElementById('leave-btn');
+    if (leaveBtn) {
+        leaveBtn.addEventListener('click', async () => {
+            for (let trackName in localTracks) {
+                let track = localTracks[trackName];
+                if (track) {
+                    track.stop();
+                    track.close();
+                    localTracks[trackName] = null;
+                }
+            }
+
+            await client.leave();
+
+            const footer = document.getElementById('footer');
+            const userStreams = document.getElementById('user-streams');
+            const joinWrapper = document.getElementById('join-wrapper');
+
+            if (footer) footer.style.display = 'none';
+            if (userStreams) userStreams.innerHTML = '';
+            if (joinWrapper) joinWrapper.style.display = 'block';
+
+            aiChatContainer.style.display = 'block';
+        });
+    }
 
     let joinStreams = async () => {
         client.on("user-published", handleUserJoined);
         client.on("user-left", handleUserLeft);
 
         client.enableAudioVolumeIndicator();
-        client.on("volume-indicator", function(evt){
-            for (let i = 0; evt.length > i; i++){
-                let speaker = evt[i].uid
-                let volume = evt[i].level
-                if(volume > 0){
-                    document.getElementById(`volume-${speaker}`).src = './assets/volume-on.svg'
-                }else{
-                    document.getElementById(`volume-${speaker}`).src = './assets/volume-off.svg'
+        client.on("volume-indicator", function (evt) {
+            for (let i = 0; i < evt.length; i++) {
+                let speaker = evt[i].uid;
+                let volume = evt[i].level;
+                const volumeIcon = document.getElementById(`volume-${speaker}`);
+                if (volumeIcon) {
+                    volumeIcon.src = volume > 0 ? './assets/volume-on.svg' : './assets/volume-off.svg';
                 }
             }
         });
 
-        [config.uid, localTracks.audioTrack, localTracks.videoTrack] = await  Promise.all([
-            client.join(config.appid, config.channel, config.token ||null, config.uid ||null),
+        [config.uid, localTracks.audioTrack, localTracks.videoTrack] = await Promise.all([
+            client.join(config.appid, config.channel, config.token || null, config.uid || null),
             AgoraRTC.createMicrophoneAudioTrack(),
             AgoraRTC.createCameraVideoTrack()
-        ])
+        ]);
 
-        
+        const player = `
+            <div class="video-containers" id="video-wrapper-${config.uid}">
+                <p class="user-uid"><img class="volume-icon" id="volume-${config.uid}" src="./assets/volume-on.svg" /> ${config.uid}</p>
+                <div class="video-player player" id="stream-${config.uid}"></div>
+            </div>`;
+        const userStreams = document.getElementById('user-streams');
+        if (userStreams) {
+            userStreams.insertAdjacentHTML('beforeend', player);
+        }
+        localTracks.videoTrack.play(`stream-${config.uid}`);
 
-
-        let player = `<div class="video-containers" id="video-wrapper-${config.uid}">
-                        <p class="user-uid"><img class="volume-icon" id="volume-${config.uid}" src="./assets/volume-on.svg" /> ${config.uid}</p>
-                        <div class="video-player player" id="stream-${config.uid}"></div>
-                  </div>`
-
-        document.getElementById('user-streams').insertAdjacentHTML('beforeend', player);
-        localTracks.videoTrack.play(`stream-${config.uid}`)
-
-        await client.publish([localTracks.audioTrack, localTracks.videoTrack])
-    }
-
+        await client.publish([localTracks.audioTrack, localTracks.videoTrack]);
+    };
 
     let handleUserJoined = async (user, mediaType) => {
-        console.log('Handle user joined')
-        remoteTracks[user.uid] = user
-        await client.subscribe(user, mediaType)
+        console.log('Handle user joined');
+        remoteTracks[user.uid] = user;
+        await client.subscribe(user, mediaType);
 
-        if (mediaType === 'video'){
-            let player = document.getElementById(`video-wrapper-${user.uid}`)
-            console.log('player:', player)
-            if (player != null){
-                player.remove()
+        if (mediaType === 'video') {
+            let player = document.getElementById(`video-wrapper-${user.uid}`);
+            if (player !== null) {
+                player.remove();
             }
 
-            player = `<div class="video-containers" id="video-wrapper-${user.uid}">
-                            <p class="user-uid"><img class="volume-icon" id="volume-${user.uid}" src="./assets/volume-on.svg" /> ${user.uid}</p>
-                            <div  class="video-player player" id="stream-${user.uid}"></div>
-                          </div>`
-            document.getElementById('user-streams').insertAdjacentHTML('beforeend', player);
-            user.videoTrack.play(`stream-${user.uid}`)
+            player = `
+                <div class="video-containers" id="video-wrapper-${user.uid}">
+                    <p class="user-uid"><img class="volume-icon" id="volume-${user.uid}" src="./assets/volume-on.svg" /> ${user.uid}</p>
+                    <div class="video-player player" id="stream-${user.uid}"></div>
+                </div>`;
+            const userStreams = document.getElementById('user-streams');
+            if (userStreams) {
+                userStreams.insertAdjacentHTML('beforeend', player);
+            }
+
+            user.videoTrack.play(`stream-${user.uid}`);
         }
 
         if (mediaType === 'audio') {
             user.audioTrack.play();
         }
-    }
-
+    };
 
     let handleUserLeft = (user) => {
-        console.log('Handle user left!')
-        delete remoteTracks[user.uid]
-        document.getElementById(`video-wrapper-${user.uid}`).remove()
-    }
+        console.log('Handle user left!');
+        delete remoteTracks[user.uid];
+        const userVideo = document.getElementById(`video-wrapper-${user.uid}`);
+        if (userVideo) {
+            userVideo.remove();
+        }
+    };
 });
