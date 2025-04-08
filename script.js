@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let config = {
         appid:"b22359b3feb544fa8d5e16c466078a15",
-        token:"007eJxTYOj52vfWzUddcvsKt6KmU6q1809f989aKaxuVlK8+Kgn+3QFhiQjI2NTyyTjtNQkUxOTtESLFNNUQ7NkEzMzA3OLREPT4yGr0xsCGRkaBDKZGBkgEMTnYEhJTc7MTcwxZmAAAKdvH8o=",
+        token:"007eJxTYJh5+Jag5nW+iEXOeXsLJglZy4UttLjUGSHcH/V3/9q4k+4KDElGRsamlknGaalJpiYmaYkWKaaphmbJJmZmBuYWiYamWx2+pDcEMjLs/97FwAiFID4HQ0pqcmZuYo4JAwMApOgg9g==",
         uid:null,
-        channel:"decimal3",
+        channel:"decimal4",
     };
 
     let localTracks = {
@@ -108,6 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
             AgoraRTC.createMicrophoneAudioTrack(),
             AgoraRTC.createCameraVideoTrack()
         ])
+
+        
+
 
         let player = `<div class="video-containers" id="video-wrapper-${config.uid}">
                         <p class="user-uid"><img class="volume-icon" id="volume-${config.uid}" src="./assets/volume-on.svg" /> ${config.uid}</p>
