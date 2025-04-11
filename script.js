@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let config = {
         appid: "b22359b3feb544fa8d5e16c466078a15",
-        token: "007eJxTYJh5+Jag5nW+iEXOeXsLJglZy4UttLjUGSHcH/V3/9q4k+4KDElGRsamlknGaalJpiYmaYkWKaaphmbJJmZmBuYWiYamWx2+pDcEMjLs/97FwAiFID4HQ0pqcmZuYo4JAwMApOgg9g==", // ❌ Don't expose in production
+        token: "007eJxTYNA7VjBV4lvAcpvbG2IPbHIuE3xrx2zy5G5z1CXngoOlhdUKDElGRsamlknGaalJpiYmaYkWKaaphmbJJmZmBuYWiYamN3h+pjcEMjK8erWBlZEBAkF8DoaU1OTM3MQcUwYGABQjIlo=", // ❌ Don't expose in production
         uid: null,
-        channel: "decimal4",
+        channel: "decimal5",
     };
 
     let localTracks = {
