@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Make sure to include AgoraRTC SDK in your HTML:
-    // <script src="https://cdn.agora.io/sdk/release/AgoraRTC_N.js"></script>
 
     let client = AgoraRTC.createClient({ mode: 'rtc', codec: "vp8" });
 
     let config = {
         appid: "b22359b3feb544fa8d5e16c466078a15",
-        token: "007eJxTYNA7VjBV4lvAcpvbG2IPbHIuE3xrx2zy5G5z1CXngoOlhdUKDElGRsamlknGaalJpiYmaYkWKaaphmbJJmZmBuYWiYamN3h+pjcEMjK8erWBlZEBAkF8DoaU1OTM3MQcUwYGABQjIlo=", // ❌ Don't expose in production
+        token: "007eJxTYNB1yGhO+3pP3V+kyyn15MtrcTV/Iy1quuMM2Ep55grcyFFgSDIyMja1TDJOS00yNTFJS7RIMU01NEs2MTMzMLdINDQ1lmHNaAhkZMjsvcTCyACBID4HQ0pqcmZuYo4ZAwMAOnYeWg==", // ❌ Don't expose in production
         uid: null,
-        channel: "decimal5",
+        channel: "decimal6",
     };
 
     let localTracks = {
