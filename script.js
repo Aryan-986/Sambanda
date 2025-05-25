@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     let client = AgoraRTC.createClient({ mode: 'rtc', codec: "vp8" });
 
     let config = {
@@ -20,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     let remoteTracks = {};
+
+    // ✅ New facing mode variable
+    let currentFacingMode = 'user';
 
     const joinButton = document.getElementById('join-btn');
     const aiChatContainer = document.getElementById('ai-chat-container');
@@ -102,6 +104,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // ✅ Flip Camera Button Handler
+    const flipCameraBtn = document.getElementById('flip-camera-btn');
+    if (flipCameraBtn) {
+        flipCameraBtn.addEventListener('click', async () => {
+            try {
+                const newFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+                const newVideoTrack = await AgoraRTC.createCameraVideoTrack({ facingMode: newFacingMode });
+
+                await client.unpublish([localTracks.videoTrack]);
+                localTracks.videoTrack.stop();
+                localTracks.videoTrack.close();
+
+                await client.publish([newVideoTrack]);
+                localTracks.videoTrack = newVideoTrack;
+                currentFacingMode = newFacingMode;
+
+                newVideoTrack.play(`stream-${config.uid}`);
+            } catch (error) {
+                console.error('Camera flip failed:', error);
+                alert('Camera flip unavailable - check device support');
+            }
+        });
+    }
+
     let joinStreams = async () => {
         client.on("user-published", handleUserJoined);
         client.on("user-left", handleUserLeft);
@@ -121,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         [config.uid, localTracks.audioTrack, localTracks.videoTrack] = await Promise.all([
             client.join(config.appid, config.channel, config.token || null, config.uid || null),
             AgoraRTC.createMicrophoneAudioTrack(),
-            AgoraRTC.createCameraVideoTrack()
+            AgoraRTC.createCameraVideoTrack({ facingMode: currentFacingMode }) // ✅ use tracked mode
         ]);
 
         const player = `
